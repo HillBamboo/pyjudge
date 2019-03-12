@@ -1,16 +1,9 @@
-from functools import partial
 from pyjudge import judge
 import random
 
-tests = [
-    (12, (1, 2, 3, 7, 5)),
-    (3, (2, 3, 4, 1, 1, 1)),
-    (15, (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)),
-]
 
-
-def test_gen(sets_count):
-    for t in range(sets_count):
+def test_gen():
+    while True:
         total = random.randint(1, 10 ** 7)
         numbers_count = random.randint(1, 10 ** 3)
         numbers = []
@@ -18,6 +11,18 @@ def test_gen(sets_count):
             number = random.randint(1, 10 ** 10)
             numbers.append(number)
         yield (total, numbers)
+
+
+test_generator = test_gen()
+
+tests = [
+    (12, (1, 2, 3, 7, 5)),
+    (3, (2, 3, 4, 1, 1, 1)),
+    (15, (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)),
+    next(test_generator),
+    next(test_generator),
+    next(test_generator),
+]
 
 
 def brute_force(searched_sum, array):
@@ -29,7 +34,7 @@ def brute_force(searched_sum, array):
     return -1
 
 
-@judge(reference=brute_force, tests=tests, test_gen=partial(test_gen, 3))
+@judge(reference=brute_force, tests=tests)
 def solution(searched_sum, array):
     """ Given an unsorted array A of size N of non-negative integers, """
     """ find a continuous sub-array which adds to a given number. """

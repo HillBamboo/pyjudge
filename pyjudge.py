@@ -10,10 +10,9 @@ class Color:
 
 
 class judge:
-    def __init__(self, reference, tests, test_gen=None):
+    def __init__(self, reference, tests):
         self.reference = reference
         self.tests = tests
-        self.test_gen = test_gen
 
     def __call__(self, func):
         ref_results = []
@@ -34,21 +33,6 @@ class judge:
                 print(
                     f"{failure_header} {test} - expected: {ref_result}, got: {result}"
                 )
-
-        if self.test_gen:
-            failures, successes = 0, 0
-            for test in self.test_gen():
-                ref_result = self.reference(*test)
-                result = func(*test)
-                if ref_result != result:
-                    failures += 1
-                else:
-                    successes += 1
-            total = failures + successes
-            if failures == 0:
-                print(f"{success_header} - Random tests: {successes}/{total} passed.")
-            else:
-                print(f"{failure_header} - Random tests: {successes}/{total} passed.")
 
         return func
 
