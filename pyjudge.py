@@ -10,8 +10,8 @@ class Color:
 
 
 class judge:
-    def __init__(self, reference, tests):
-        self.reference = reference
+    def __init__(self, reference_solution, tests):
+        self.reference_solution = reference_solution
         self.tests = tests
 
     def __call__(self, func):
@@ -23,7 +23,7 @@ class judge:
 
         test_number = 0
         for test in self.tests:
-            ref_result = self.reference(*test)
+            ref_result = self.reference_solution(*test)
             result = func(*test)
             ref_results += [ref_result]
             results += [result]

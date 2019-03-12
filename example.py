@@ -36,7 +36,7 @@ def brute_force(searched_sum, array):
     return -1
 
 
-@judge(reference=brute_force, tests=tests)
+@judge(reference_solution=brute_force, tests=tests)
 def solution(searched_sum, array):
     """ Given an unsorted array A of size N of non-negative integers, """
     """ find a continuous sub-array which adds to a given number. """
@@ -55,7 +55,7 @@ def solution(searched_sum, array):
     return -1
 
 
-@judge(reference=brute_force, tests=tests)
+@judge(reference_solution=brute_force, tests=tests)
 def solution2(subsequent_sum, array):
     i, j = 0, 0
     total = array[0]
