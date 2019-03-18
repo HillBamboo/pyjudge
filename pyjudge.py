@@ -21,14 +21,13 @@ class judge:
         success_header = f"{Color.OKGREEN}SUCCESS{Color.ENDC}"
         failure_header = f"{Color.FAIL}FAILURE{Color.ENDC}"
 
-        test_number = 0
-        for test in self.tests:
+        for i, test in enumerate(self.tests):
             ref_result = self.reference_solution(*test)
             result = func(*test)
             ref_results += [ref_result]
             results += [result]
 
-            header = f"Test #{test_number} : {func.__name__}"
+            header = f"Test #{i} : {func.__name__}"
             if ref_result == result:
                 print(
                     f"{header} : {success_header} - expected: {ref_result}, got: {result}"
@@ -37,6 +36,5 @@ class judge:
                 print(
                     f"{header} : {failure_header} {test} - expected: {ref_result}, got: {result}"
                 )
-            test_number += 1
 
         return func
