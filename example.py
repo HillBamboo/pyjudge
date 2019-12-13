@@ -57,20 +57,23 @@ def solution(searched_sum, array):
 
 @judge(reference_solution=brute_force, tests=tests)
 def solution2(subsequent_sum, array):
-    i, j = 0, 0
-    total = array[0]
-    while total != subsequent_sum and i <= j and j < len(array):
-        if total < subsequent_sum:
-            j += 1
-            if j < len(array):
-                total += array[j]
-        else:
-            if i == j:
-                return -1
-            total -= array[i]
-            i += 1
-    if total == subsequent_sum:
-        return (i, j)
-    else:
-        return -1
+    # i, j = 0, 0
+    # total = array[0]
+    # while total != subsequent_sum and i <= j and j < len(array):
+    #     if total < subsequent_sum:
+    #         j += 1
+    #         if j < len(array):
+    #             total += array[j]
+    #     else:
+    #         if i == j:
+    #             return -1
+    #         total -= array[i]
+    #         i += 1
+    # if total == subsequent_sum:
+    #     return (i, j)
+    # else:
+    #     return -1
+    return -1
 
+# for data in tests:
+#     solution2(*data)

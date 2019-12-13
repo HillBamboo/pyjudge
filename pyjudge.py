@@ -1,3 +1,5 @@
+import time
+
 class Color:
     HEADER = "\033[95m"
     OKBLUE = "\033[94m"
@@ -10,31 +12,65 @@ class Color:
 
 
 class judge:
-    def __init__(self, reference_solution, tests):
+    def __init__(self, reference_solution=None, tests=None, verbose=False):
         self.reference_solution = reference_solution
+        if tests is None:
+            raise ValueError("tests must be provided!")
         self.tests = tests
+        self.verbose = verbose
+        self.success_header = f"{Color.OKGREEN}SUCCESS{Color.ENDC}"
+        self.failure_header = f"{Color.FAIL}FAILURE{Color.ENDC}"
 
     def __call__(self, func):
-        ref_results = []
-        results = []
+        print(f'\n=== Run {Color.HEADER}{func.__name__}{Color.ENDC}')
+        if self.reference_solution is None: return self.test_single(func)
+        else : return self.compare(func)
 
-        success_header = f"{Color.OKGREEN}SUCCESS{Color.ENDC}"
-        failure_header = f"{Color.FAIL}FAILURE{Color.ENDC}"
-
-        for i, test in enumerate(self.tests):
-            ref_result = self.reference_solution(*test)
-            result = func(*test)
-            ref_results += [ref_result]
-            results += [result]
-
-            header = f"Test #{i} : {func.__name__}"
-            if ref_result == result:
-                print(
-                    f"{header} : {success_header} - expected: {ref_result}, got: {result}"
-                )
+    def test_single(self, func):
+        cnt_ok = 0
+        total_time = 0
+        for i, (*data, expected) in enumerate(self.tests):
+            start = time.time()
+            out = func(*data)
+            end = time.time()
+            total_time += (end - start)
+            header = f" Test #{i}"
+            if expected == out:
+                if self.verbose:
+                    print(
+                        f"{header} : {self.success_header} - expected: {ref}, got: {out}"
+                    )
+                cnt_ok += 1
             else:
                 print(
-                    f"{header} : {failure_header} {test} - expected: {ref_result}, got: {result}"
+                    f"{header} : {self.failure_header} {test} - expected: {ref}, got: {out}"
                 )
+        avg_time = total_time / len(self.tests)
+        # mask_result = f'{Color.OKBLUE}OK{Color.ENDC}' if cnt_ok == len(self.tests) else f'{Color.FAIL}FAIL{Color.ENDC}'
+        print(f'--- {Color.OKGREEN}PASS {cnt_ok}/{len(self.tests)}{Color.ENDC} ({avg_time:.3f}s)')
+        return func
 
+    def compare(self, func):
+        cnt_ok = 0
+        total_time = 0
+        for i, test in enumerate(self.tests):
+            ref = self.reference_solution(*test)
+            start = time.time()
+            out = func(*test)
+            end = time.time()
+            total_time += (end - start)
+            header = f"\tTest #{i}"
+            if ref == out:
+                if self.verbose:
+                    print(
+                        f"{header} : {self.success_header} - expected: {ref}, got: {out}"
+                    )
+                cnt_ok += 1
+            else:
+                print(
+                    f"{header} : {self.failure_header} {test} - expected: {ref}, got: {out}"
+                )
+        avg_time = total_time / len(self.tests)
+        # mask_result = f'{Color.OKBLUE}OK{Color.ENDC}' if cnt_ok == len(self.tests) else f'{Color.FAIL}FAIL{Color.ENDC}'
+        print(f'--- {Color.OKGREEN}PASS {cnt_ok}/{len(self.tests)}{Color.ENDC} ({avg_time:.3f}s)')
         return func
