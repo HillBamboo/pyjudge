@@ -18,8 +18,8 @@ class judge:
             raise ValueError("tests must be provided!")
         self.tests = tests
         self.verbose = verbose
-        self.success_header = f"{Color.OKGREEN}SUCCESS{Color.ENDC}"
-        self.failure_header = f"{Color.FAIL}FAILURE{Color.ENDC}"
+        self.success_header = f'{Color.OKGREEN}SUCCESS{Color.ENDC}'
+        self.failure_header = f'{Color.FAIL}FAILURE{Color.ENDC}'
 
     def __call__(self, func):
         print(f'\n=== Run {Color.HEADER}{func.__name__}{Color.ENDC}')
@@ -31,23 +31,23 @@ class judge:
         total_time = 0
         for i, (*data, expected) in enumerate(self.tests):
             start = time.time()
-            out = func(*data)
+            out = func(None, *data)
             end = time.time()
             total_time += (end - start)
             header = f" Test #{i}"
             if expected == out:
                 if self.verbose:
                     print(
-                        f"{header} : {self.success_header} - expected: {ref}, got: {out}"
+                        f"{header} : {self.success_header} - expected: {expected}, got: {out}"
                     )
                 cnt_ok += 1
             else:
                 print(
-                    f"{header} : {self.failure_header} {test} - expected: {ref}, got: {out}"
+                    f"{header} : {self.failure_header} {data} - expected: {expected}, got: {out}"
                 )
-        avg_time = total_time / len(self.tests)
+        avg_time = 1000 * total_time / len(self.tests)
         # mask_result = f'{Color.OKBLUE}OK{Color.ENDC}' if cnt_ok == len(self.tests) else f'{Color.FAIL}FAIL{Color.ENDC}'
-        print(f'--- {Color.OKGREEN}PASS {cnt_ok}/{len(self.tests)}{Color.ENDC} ({avg_time:.3f}s)')
+        print(f'--- {Color.OKGREEN}PASS {cnt_ok}/{len(self.tests)}{Color.ENDC} ({avg_time:.0f}ms)')
         return func
 
     def compare(self, func):
@@ -56,7 +56,7 @@ class judge:
         for i, test in enumerate(self.tests):
             ref = self.reference_solution(*test)
             start = time.time()
-            out = func(*test)
+            out = func(None, *test) # TODO: self = None
             end = time.time()
             total_time += (end - start)
             header = f"\tTest #{i}"
@@ -70,7 +70,7 @@ class judge:
                 print(
                     f"{header} : {self.failure_header} {test} - expected: {ref}, got: {out}"
                 )
-        avg_time = total_time / len(self.tests)
+        avg_time = 1000 * total_time / len(self.tests)
         # mask_result = f'{Color.OKBLUE}OK{Color.ENDC}' if cnt_ok == len(self.tests) else f'{Color.FAIL}FAIL{Color.ENDC}'
-        print(f'--- {Color.OKGREEN}PASS {cnt_ok}/{len(self.tests)}{Color.ENDC} ({avg_time:.3f}s)')
+        print(f'--- {Color.OKGREEN}PASS {cnt_ok}/{len(self.tests)}{Color.ENDC} ({avg_time:.0f}ms)')
         return func
